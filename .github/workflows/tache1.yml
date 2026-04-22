@@ -22,10 +22,13 @@ jobs:
       - name: Récupérer le code
         uses: actions/checkout@v4
 
+      - name: Installer Vercel CLI
+        run: npm install -g vercel@47.2.2
+
+      - name: Créer la configuration Vercel
+        run: |
+          mkdir -p .vercel
+          echo '{"orgId":"${{ secrets.VERCEL_ORG_ID }}","projectId":"${{ secrets.VERCEL_PROJECT_ID }}"}' > .vercel/project.json
+
       - name: Déployer sur Vercel
-        uses: vercel/actions/deploy@1
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-          vercel-args: '--prod'
+        run: vercel --prod --token=${{ secrets.VERCEL_TOKEN }} --yes
